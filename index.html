@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#ECECEA;--ink:#101010;--muted:#7b7b78;--line:#cfcfcb;--tile:#d9d9d5;--hot:#FF4A1C;--sans:"Inter Tight","Helvetica Neue",Arial,sans-serif;--mono:"DM Mono",ui-monospace,Menlo,monospace;--pad:clamp(1rem,2.4vw,2rem)}
+@media (prefers-color-scheme:dark){:root{--bg:#111110;--ink:#ecece8;--muted:#85857f;--line:#2b2b29;--tile:#222220}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 1rem/1.5 var(--sans);-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+:focus-visible{outline:2px solid var(--hot);outline-offset:3px}
+img{display:block;width:100%;height:100%;object-fit:cover}
+.lab{font:400 .75rem/1.4 var(--mono);color:var(--muted);text-transform:none}
+.skip{position:absolute;left:-999px}.skip:focus{left:var(--pad);top:var(--pad);z-index:99;background:var(--ink);color:var(--bg);padding:.4rem .8rem}
+.view{display:none}.view.on{display:block}
+.wrap{padding:0 var(--pad)}
+
+/* top */
+.top{display:grid;grid-template-columns:repeat(12,1fr);gap:1rem;padding:calc(1rem + env(safe-area-inset-top,0px)) var(--pad) 0}
+.top>*{grid-column:span 3}
+.top .info{grid-column:span 4}
+.top .nav{grid-column:9/span 3;display:flex;flex-direction:column;align-items:flex-start}
+.top .yr{grid-column:12/span 1;text-align:right}
+.nav a{font-size:.95rem}.nav a:hover,.nav a.cur{color:var(--hot)}
+.top p{margin:.2rem 0 0;max-width:20rem;font-size:.95rem}
+@media (max-width:760px){.top>*,.top .info,.top .nav,.top .yr{grid-column:1/-1;text-align:left}.top{gap:.6rem}}
+
+h1{margin:clamp(2rem,9vw,7rem) 0 0;padding:0 var(--pad);font-weight:500;letter-spacing:-.065em;line-height:.82;font-size:clamp(3.8rem,19vw,22rem);overflow-wrap:anywhere}
+
+/* statement */
+.state{padding:clamp(3rem,10vw,9rem) var(--pad) clamp(2rem,6vw,5rem);display:grid;grid-template-columns:repeat(12,1fr);gap:2rem 1rem}
+.state p{grid-column:1/span 9;margin:0;font-weight:400;font-size:clamp(1.6rem,4.6vw,4.4rem);line-height:1.05;letter-spacing:-.04em}
+.state .pill{display:inline-block;vertical-align:middle;width:1.9em;height:.95em;border-radius:99px;overflow:hidden;background:var(--tile);margin:0 .08em}
+.state aside{grid-column:10/span 3;align-self:end}
+.state aside ul{list-style:none;margin:.6rem 0 1rem;padding:0;font-size:.9rem}
+.state aside li{padding:.25rem 0;border-top:1px solid var(--line)}
+.more{border-bottom:1px solid currentColor;font-size:.95rem}.more:hover{color:var(--hot)}
+@media (max-width:900px){.state p,.state aside{grid-column:1/-1}}
+
+/* project list */
+.list{padding:0 var(--pad);margin-top:1rem}
+.list .head,.row{display:grid;grid-template-columns:5rem 3.2rem 1fr 1fr 4rem;gap:1rem;align-items:baseline;padding:.9rem 0;border-top:1px solid var(--line)}
+.list .head{padding:.6rem 0;border-top:0}
+.row{font-size:clamp(1.05rem,2.2vw,1.7rem);letter-spacing:-.025em;transition:padding .25s,color .25s}
+.row .i,.row .in,.row .w,.row .y{font:400 .78rem/1 var(--mono);color:var(--muted)}
+.row .y{text-align:right}
+.row:hover{padding-left:.8rem;color:var(--hot)}
+.row:last-child{border-bottom:1px solid var(--line)}
+@media (max-width:760px){.list .head{display:none}.row{grid-template-columns:3.4rem 1fr 3rem}.row .in,.row .w{display:none}}
+#peek{position:fixed;z-index:30;left:0;top:0;width:min(22rem,40vw);aspect-ratio:4/5;background:var(--tile);pointer-events:none;opacity:0;transform:translate(-50%,-50%) scale(.92);transition:opacity .2s,transform .2s;overflow:hidden}
+#peek.on{opacity:1;transform:translate(-50%,-50%) scale(1)}
+@media (hover:none){#peek{display:none}}
+
+/* footer */
+.foot{margin-top:clamp(3rem,8vw,7rem);padding:1.5rem var(--pad) calc(1.5rem + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(12,1fr);gap:1.4rem 1rem}
+.foot>div{grid-column:span 3}
+@media (max-width:900px){.foot>div{grid-column:span 6}}
+.foot .mail{font-size:1.05rem;border-bottom:1px solid currentColor}
+.foot .mail:hover{color:var(--hot)}
+.foot .sl{color:var(--muted);margin:0 .35rem}
+.avail{margin:0 0 .2rem}
+
+/* pages */
+.page{padding:calc(6rem + env(safe-area-inset-top,0px)) var(--pad) 2rem}
+.page h2{margin:0 0 2rem;font-weight:500;letter-spacing:-.06em;line-height:.9;font-size:clamp(2.6rem,11vw,9rem)}
+.cols{display:grid;grid-template-columns:repeat(12,1fr);gap:2rem 1rem}
+.cols .a{grid-column:1/span 6}.cols .b{grid-column:8/span 5}
+@media (max-width:900px){.cols .a,.cols .b{grid-column:1/-1}}
+.cols p{margin:0 0 1rem;font-size:clamp(1.15rem,2vw,1.6rem);line-height:1.3;letter-spacing:-.02em}
+.cols ul{list-style:none;margin:.4rem 0 1.6rem;padding:0}
+.cols li{padding:.4rem 0;border-top:1px solid var(--line)}
+.pt{aspect-ratio:4/5;background:var(--tile);overflow:hidden;max-width:24rem;margin-bottom:1.4rem}
+.imgs{display:grid;gap:var(--pad);margin-top:2rem}
+.imgs .ph{background:var(--tile);aspect-ratio:16/10;overflow:hidden;display:grid;place-items:center;font:.8rem var(--mono);color:var(--muted)}
+.next{display:flex;justify-content:space-between;margin-top:3rem;padding-top:1rem;border-top:1px solid var(--line);font-size:1.5rem;letter-spacing:-.03em}
+.next:hover{color:var(--hot)}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<main id="main">
+ <section class="view" id="v-home">
+  <div class="top" id="top">
+    <div class="info"><span class="lab">Info:</span><p id="intro"></p></div>
+    <div class="nav-wrap" style="grid-column:span 2"></div>
+    <div class="nav" id="nav1"></div>
+    <div class="yr lab" id="yr"></div>
+  </div>
+  <h1 id="name"></h1>
+  <div class="state"><p id="stmt"></p>
+    <aside><span class="lab">Info:</span><p style="margin:.3rem 0;font-size:.95rem" id="rec"></p><ul id="awards"></ul>
+      <p class="lab avail" id="avail"></p><a class="more" href="#about">More about</a></aside></div>
+  <div class="list" id="work">
+    <div class="head lab"><span>Project</span><span></span><span>Name</span><span>With</span><span style="text-align:right">Year</span></div>
+    <div id="rows"></div>
+  </div>
+ </section>
+
+ <section class="view" id="v-about"><div class="page"><h2>About</h2>
+   <div class="cols"><div class="a" id="ab"></div><div class="b" id="ab2"></div></div></div></section>
+
+ <section class="view" id="v-project"><div class="page" id="proj"></div></section>
+</main>
+
+<div class="foot">
+  <div><span class="lab">Nav.:</span><div class="nav" id="nav2" style="display:flex;flex-direction:column"></div></div>
+  <div><span class="lab">Socials:</span><p style="margin:.2rem 0" id="soc"></p></div>
+  <div><span class="lab">Email:</span><p style="margin:.2rem 0"><button class="mail" id="mail"></button></p></div>
+  <div><span class="lab" id="cred"></span></div>
+</div>
+<div id="peek"></div>
+
+<script src="content.js"></script>
+<script>
+const S = window.SITE, P = S.projects, $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const img = (src, alt) => src ? `<img src="${esc(src)}" alt="${esc(alt)}" loading="lazy">` : "";
+const initials = n => n.split(/\s+/).map(w => w[0]).join("").slice(0, 2).toUpperCase();
+const pad = n => String(n).padStart(2, "0");
+
+document.title = `${S.name}, ${S.role}`;
+(document.querySelector("meta[name=description]") || document.head.appendChild(Object.assign(document.createElement("meta"), {name: "description"}))).content = S.description;
+
+/* shared bits */
+const navHTML = `<a href="#home" data-h="home">Home</a><a href="#work" data-h="work">Projects (${P.length})</a><a href="#about" data-h="about">About</a>`;
+$("#nav1").innerHTML = $("#nav2").innerHTML = navHTML;
+$("#yr").textContent = "©" + new Date().getFullYear();
+$("#intro").textContent = S.intro;
+$("#name").textContent = S.name;
+$("#stmt").innerHTML = esc(S.statement).replace("{img}", `<span class="pill">${img(S.statementImg, "")}</span>`);
+$("#rec").textContent = S.about.recognition;
+$("#awards").innerHTML = S.about.awards.map(a => `<li>${esc(a)}</li>`).join("");
+$("#avail").innerHTML = S.availableFrom ? `Available from:<br>${esc(S.availableFrom)}` : "";
+$("#soc").innerHTML = S.socials.map(s => `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.label)}</a>`).join('<span class="sl">/</span>');
+$("#cred").innerHTML = S.credit.label ? (S.credit.url ? `<a href="${esc(S.credit.url)}" target="_blank" rel="noopener">${esc(S.credit.label)}</a>` : esc(S.credit.label)) : "";
+$("#mail").textContent = S.email;
+$("#mail").onclick = async () => { try { await navigator.clipboard.writeText(S.email); $("#mail").textContent = "Copied"; setTimeout(() => $("#mail").textContent = S.email, 1400); } catch (e) { location.href = "mailto:" + S.email; } };
+
+/* project rows */
+$("#rows").innerHTML = P.map((p, i) => {
+  const href = p.url ? esc(p.url) : "#p/" + esc(p.id), ext = p.url ? ' target="_blank" rel="noopener"' : "";
+  return `<a class="row" href="${href}"${ext} data-i="${i}"><span class="i">P.${pad(i + 1)}</span><span class="in">${initials(p.name)}</span><span>${esc(p.name)}</span><span class="w">${esc(p.with)}</span><span class="y">${esc(p.year)}</span></a>`;
+}).join("");
+
+/* hover preview follows the cursor */
+const peek = $("#peek"); let tx = 0, ty = 0, cx = 0, cy = 0, raf = 0;
+const tick = () => { cx += (tx - cx) * .18; cy += (ty - cy) * .18; peek.style.left = cx + "px"; peek.style.top = cy + "px"; raf = peek.classList.contains("on") ? requestAnimationFrame(tick) : 0; };
+$("#rows").addEventListener("pointerover", e => { const r = e.target.closest(".row"); if (!r) return; const p = P[+r.dataset.i]; peek.innerHTML = img(p.cover, p.name); peek.classList.add("on"); if (!raf) raf = requestAnimationFrame(tick); });
+$("#rows").addEventListener("pointerleave", () => peek.classList.remove("on"));
+addEventListener("pointermove", e => { tx = e.clientX + 40; ty = e.clientY; if (!peek.classList.contains("on")) { cx = tx; cy = ty; } }, {passive: true});
+
+/* about */
+const A = S.about;
+$("#ab").innerHTML = (A.portrait ? `<div class="pt">${img(A.portrait, S.name)}</div>` : "") + A.text.map(t => `<p>${esc(t)}</p>`).join("");
+$("#ab2").innerHTML = `<span class="lab">Recognition:</span><p style="font-size:1rem;margin:.3rem 0">${esc(A.recognition)}</p><ul>${A.awards.map(a => `<li>${esc(a)}</li>`).join("")}</ul>
+  <span class="lab">Services:</span><ul>${A.services.map(a => `<li>${esc(a)}</li>`).join("")}</ul>`;
+
+/* routing: #home  #work  #about  #p/<id> */
+function route() {
+  const h = (location.hash || "#home").slice(1), [a, id] = h.split("/");
+  const view = a === "p" ? "project" : a === "about" ? "about" : "home";
+  document.querySelectorAll(".view").forEach(v => v.classList.toggle("on", v.id === "v-" + view));
+  document.querySelectorAll(".nav a").forEach(l => l.classList.toggle("cur", l.dataset.h === (a === "p" ? "work" : a || "home")));
+  if (view === "project") {
+    const i = Math.max(0, P.findIndex(p => p.id === id)), p = P[i], n = P[(i + 1) % P.length];
+    $("#proj").innerHTML = `<span class="lab">P.${pad(i + 1)} / ${esc(p.year)}</span><h2 style="margin-top:.6rem">${esc(p.name)}</h2>
+      <div class="cols"><div class="a"><p>${esc(p.text)}</p></div><div class="b">${p.with ? `<span class="lab">With:</span><p style="font-size:1rem">${esc(p.with)}</p>` : ""}</div></div>
+      <div class="imgs">${p.images.map((s, k) => `<div class="ph">${s ? img(s, p.name + " " + (k + 1)) : pad(k + 1)}</div>`).join("")}</div>
+      <a class="next" href="#p/${esc(n.id)}"><span>Next</span><span>${esc(n.name)} →</span></a>`;
+  }
+  if (a === "work") requestAnimationFrame(() => $("#work").scrollIntoView({behavior: "smooth", block: "start"}));
+  else scrollTo(0, 0);
+}
+addEventListener("hashchange", route); route();
+</script>
+</body>
+</html>
