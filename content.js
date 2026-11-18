@@ -50,7 +50,7 @@ window.SITE = {
       "name": "Project One",
       "with": "Collaborator (Design)",
       "year": 2026,
-      "cover": "",
+      "cover": "images/1-project-one-cover-mwlgpz0c-1.jpg",
       "url": "",
       "text": "A short description of the brief, your role and the result.",
       "images": [
@@ -64,7 +64,7 @@ window.SITE = {
       "name": "Project Two",
       "with": "Collaborator (Design)",
       "year": 2026,
-      "cover": "",
+      "cover": "images/2-project-two-cover-mwlgpz0c-2.jpg",
       "url": "",
       "text": "A short description of the brief, your role and the result.",
       "images": [
