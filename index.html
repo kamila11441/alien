@@ -12,7 +12,7 @@
 @media (prefers-color-scheme:dark){:root{--bg:#111110;--ink:#ecece8;--muted:#85857f;--line:#2b2b29;--tile:#222220}}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{margin:0;background:var(--bg);color:var(--ink);font:400 1rem/1.5 var(--sans);-webkit-font-smoothing:antialiased}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 1rem/1.5 var(--sans);-webkit-font-smoothing:antialiased;isolation:isolate}
 a{color:inherit;text-decoration:none}
 button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
 :focus-visible{outline:2px solid var(--hot);outline-offset:3px}
@@ -21,21 +21,22 @@ img{display:block;width:100%;height:100%;object-fit:cover}
 .skip{position:absolute;left:-999px}.skip:focus{left:var(--pad);top:var(--pad);z-index:99;background:var(--ink);color:var(--bg);padding:.4rem .8rem}
 .view{display:none}.view.on{display:block}
 .wrap{padding:0 var(--pad)}
+main#main{position:relative;z-index:1}
 
 /* top */
 .top{display:grid;grid-template-columns:repeat(12,1fr);gap:1rem;padding:calc(1rem + env(safe-area-inset-top,0px)) var(--pad) 0}
 .top>*{grid-column:span 3}
 .top .info{grid-column:span 4}
 .top .nav{grid-column:9/span 3;display:flex;flex-direction:column;align-items:flex-start}
-.top .yr{grid-column:12/span 1;text-align:right}
+.top .yr{grid-column:12/span 1;text-align:right;display:flex;flex-direction:column;align-items:flex-end}.manage-link{font:400 .64rem/1.3 var(--mono);color:var(--muted);text-decoration:underline;text-underline-offset:.18rem;margin-top:.2rem}.manage-link:hover{color:var(--hot)}
 .nav a{font-size:.95rem}.nav a:hover,.nav a.cur{color:var(--hot)}
 .top p{margin:.2rem 0 0;max-width:20rem;font-size:.95rem}
-@media (max-width:760px){.top>*,.top .info,.top .nav,.top .yr{grid-column:1/-1;text-align:left}.top{gap:.6rem}}
+@media (max-width:760px){.top>*,.top .info,.top .nav,.top .yr{grid-column:1/-1;text-align:left}.top .yr{align-items:flex-start}.top{gap:.6rem}}
 
 h1{margin:clamp(2rem,9vw,7rem) 0 0;padding:0 var(--pad);font-weight:500;letter-spacing:-.065em;line-height:.82;font-size:clamp(3.8rem,19vw,22rem);overflow-wrap:anywhere}
 
 /* statement */
-.state{padding:clamp(3rem,10vw,9rem) var(--pad) clamp(2rem,6vw,5rem);display:grid;grid-template-columns:repeat(12,1fr);gap:2rem 1rem}
+.state{position:relative;z-index:3;padding:clamp(3rem,10vw,9rem) var(--pad) clamp(2rem,6vw,5rem);display:grid;grid-template-columns:repeat(12,1fr);gap:2rem 1rem}
 .state p{grid-column:1/span 9;margin:0;font-weight:400;font-size:clamp(1.6rem,4.6vw,4.4rem);line-height:1.05;letter-spacing:-.04em}
 .state .pill{display:inline-block;vertical-align:middle;width:1.9em;height:.95em;border-radius:99px;overflow:hidden;background:var(--tile);margin:0 .08em}
 .state aside{grid-column:10/span 3;align-self:end}
@@ -44,19 +45,30 @@ h1{margin:clamp(2rem,9vw,7rem) 0 0;padding:0 var(--pad);font-weight:500;letter-s
 .more{border-bottom:1px solid currentColor;font-size:.95rem}.more:hover{color:var(--hot)}
 @media (max-width:900px){.state p,.state aside{grid-column:1/-1}}
 
-/* project list */
-.list{padding:0 var(--pad);margin-top:1rem}
-.list .head,.row{display:grid;grid-template-columns:5rem 3.2rem 1fr 1fr 4rem;gap:1rem;align-items:baseline;padding:.9rem 0;border-top:1px solid var(--line)}
-.list .head{padding:.6rem 0;border-top:0}
-.row{font-size:clamp(1.05rem,2.2vw,1.7rem);letter-spacing:-.025em;transition:padding .25s,color .25s}
-.row .i,.row .in,.row .w,.row .y{font:400 .78rem/1 var(--mono);color:var(--muted)}
-.row .y{text-align:right}
-.row:hover{padding-left:.8rem;color:var(--hot)}
-.row:last-child{border-bottom:1px solid var(--line)}
-@media (max-width:760px){.list .head{display:none}.row{grid-template-columns:3.4rem 1fr 3rem}.row .in,.row .w{display:none}}
+/* oversized project list */
+.list{position:relative;z-index:4;padding:2rem var(--pad) 0;margin-top:1rem;background:color-mix(in srgb,var(--bg) 78%,transparent)}
+.list .head{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;padding:.6rem 0 .9rem;border-bottom:1px solid var(--line)}
+.row{position:relative;display:block;padding:0 0 .7rem;border-top:1px solid var(--ink);letter-spacing:-.04em;transition:color .25s;will-change:transform,opacity}
+.row-main{display:grid;grid-template-columns:1fr 1fr;align-items:start;position:relative;min-height:clamp(7rem,18vw,15rem);font-size:clamp(5rem,22vw,18rem);font-weight:600;line-height:.8;letter-spacing:-.075em;overflow:hidden}
+.row .i,.row .in{font-family:var(--sans);font-size:inherit;font-weight:600;line-height:inherit;color:inherit;white-space:nowrap}
+.row .in{grid-column:2;justify-self:start}
+.row-arrow{position:absolute;right:.04em;top:.12em;font:400 clamp(3rem,8vw,8rem)/1 var(--sans);opacity:0;transform:translate(-.3em,.3em);transition:opacity .35s,transform .35s}
+.row-meta{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:1rem;padding:.55rem 0 .2rem;border-top:1px solid var(--line);font:400 .66rem/1.3 var(--mono);text-transform:uppercase;letter-spacing:.02em}
+.row-meta .y{text-align:right}.row:hover{color:var(--hot)}.row:hover .row-arrow{opacity:1;transform:translate(0,0)}.row:last-child{border-bottom:1px solid var(--ink)}
+@media(max-width:760px){.list{padding-top:1.2rem}.list .head{display:none}.row-main{min-height:clamp(6rem,24vw,10rem);font-size:clamp(4.5rem,23vw,11rem)}.row-meta{grid-template-columns:1fr 1fr;row-gap:.3rem}.row-meta .y{text-align:left}.row-arrow{font-size:3rem}}
 #peek{position:fixed;z-index:30;left:0;top:0;width:min(22rem,40vw);aspect-ratio:4/5;background:var(--tile);pointer-events:none;opacity:0;transform:translate(-50%,-50%) scale(.92);transition:opacity .2s,transform .2s;overflow:hidden}
 #peek.on{opacity:1;transform:translate(-50%,-50%) scale(1)}
-@media (hover:none){#peek{display:none}}
+#portraitStage{position:relative;min-height:160svh;padding:20svh var(--pad) 0;display:flex;justify-content:center;align-items:flex-start}
+#scrollPortrait{position:sticky;top:20svh;width:min(44vw,34rem);height:min(60vh,40rem);opacity:0;pointer-events:none;transform:scale(.52);transform-origin:center center;transform-style:preserve-3d;will-change:transform;transition:opacity .3s ease;overflow:hidden}
+#scrollPortrait .turn{position:absolute;inset:0;will-change:transform}
+#scrollPortrait .photo-layer{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;clip-path:inset(0 0 0 100%);filter:grayscale(.12);transition:opacity .8s cubic-bezier(.2,.7,.2,1),clip-path .95s cubic-bezier(.2,.7,.2,1)}
+#scrollPortrait .photo-layer.active{opacity:1;clip-path:inset(0)}
+#foldCanvas{position:absolute;z-index:3;inset:0;width:100%;height:100%;opacity:0;pointer-events:none;transition:opacity .18s ease}
+#foldCanvas.on{opacity:.96}
+#mistCanvas{position:absolute;z-index:4;inset:0;width:100%;height:100%;pointer-events:none}
+#canvas{position:fixed;z-index:2;inset:0;width:100vw;height:100vh;pointer-events:none;opacity:.78}
+@media(max-width:760px){#portraitStage{min-height:125svh;padding-top:16svh}#scrollPortrait{top:16svh;width:min(74vw,25rem);height:54vh}}
+@media(hover:none){#peek{display:none}}
 
 /* footer */
 .foot{margin-top:clamp(3rem,8vw,7rem);padding:1.5rem var(--pad) calc(1.5rem + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(12,1fr);gap:1.4rem 1rem}
@@ -79,9 +91,13 @@ h1{margin:clamp(2rem,9vw,7rem) 0 0;padding:0 var(--pad);font-weight:500;letter-s
 .pt{aspect-ratio:4/5;background:var(--tile);overflow:hidden;max-width:24rem;margin-bottom:1.4rem}
 .imgs{display:grid;gap:var(--pad);margin-top:2rem}
 .imgs .ph{background:var(--tile);aspect-ratio:16/10;overflow:hidden;display:grid;place-items:center;font:.8rem var(--mono);color:var(--muted)}
+.imgs .ph{clip-path:inset(0 0 0 100%);animation:photo-reveal .9s cubic-bezier(.2,.7,.2,1) calc(var(--photo-index,0)*.1s) both}
+@keyframes photo-reveal{to{clip-path:inset(0)}}
 .next{display:flex;justify-content:space-between;margin-top:3rem;padding-top:1rem;border-top:1px solid var(--line);font-size:1.5rem;letter-spacing:-.03em}
 .next:hover{color:var(--hot)}
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+@keyframes page-enter{from{opacity:0;transform:translateY(1.2rem)}to{opacity:1;transform:translateY(0)}}
+.view.on{animation:page-enter .7s cubic-bezier(.2,.7,.2,1) both}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
 </style>
 </head>
 <body>
@@ -99,6 +115,9 @@ h1{margin:clamp(2rem,9vw,7rem) 0 0;padding:0 var(--pad);font-weight:500;letter-s
   <div class="state"><p id="stmt"></p>
     <aside><span class="lab">Info:</span><p style="margin:.3rem 0;font-size:.95rem" id="rec"></p><ul id="awards"></ul>
       <p class="lab avail" id="avail"></p><a class="more" href="#about">More about</a></aside></div>
+  <div class="portrait-stage" id="portraitStage" aria-label="Portrait transition">
+    <div id="scrollPortrait" aria-hidden="true"><div class="turn"><img class="photo-layer active" id="scrollPortraitA" alt=""><img class="photo-layer" id="scrollPortraitB" alt=""></div><canvas id="foldCanvas"></canvas><canvas id="mistCanvas"></canvas></div>
+  </div>
   <div class="list" id="work">
     <div class="head lab"><span>Project</span><span></span><span>Name</span><span>With</span><span style="text-align:right">Year</span></div>
     <div id="rows"></div>
@@ -118,6 +137,7 @@ h1{margin:clamp(2rem,9vw,7rem) 0 0;padding:0 var(--pad);font-weight:500;letter-s
   <div><span class="lab" id="cred"></span></div>
 </div>
 <div id="peek"></div>
+<canvas id="canvas" class="pointer-events-none fixed inset-0" aria-hidden="true"></canvas>
 
 <script src="content.js"></script>
 <script>
@@ -133,7 +153,8 @@ document.title = `${S.name}, ${S.role}`;
 /* shared bits */
 const navHTML = `<a href="#home" data-h="home">Home</a><a href="#work" data-h="work">Projects (${P.length})</a><a href="#about" data-h="about">About</a>`;
 $("#nav1").innerHTML = $("#nav2").innerHTML = navHTML;
-$("#yr").textContent = "©" + new Date().getFullYear();
+const year = new Date().getFullYear();
+$("#yr").innerHTML = "©" + year + " " + esc(S.name) + "<a class=\"manage-link\" href=\"manager.html\">Manage</a>";
 $("#intro").textContent = S.intro;
 $("#name").textContent = S.name;
 $("#stmt").innerHTML = esc(S.statement).replace("{img}", `<span class="pill">${img(S.statementImg, "")}</span>`);
@@ -148,15 +169,74 @@ $("#mail").onclick = async () => { try { await navigator.clipboard.writeText(S.e
 /* project rows */
 $("#rows").innerHTML = P.map((p, i) => {
   const href = p.url ? esc(p.url) : "#p/" + esc(p.id), ext = p.url ? ' target="_blank" rel="noopener"' : "";
-  return `<a class="row" href="${href}"${ext} data-i="${i}"><span class="i">P.${pad(i + 1)}</span><span class="in">${initials(p.name)}</span><span>${esc(p.name)}</span><span class="w">${esc(p.with)}</span><span class="y">${esc(p.year)}</span></a>`;
+  const projectNo = "Project " + pad(i + 1);
+  return '<a class="row" href="' + href + '"' + ext + ' data-i="' + i + '"><div class="row-main"><span class="i">P.' + pad(i + 1) + '</span><span class="in">' + initials(p.name) + '</span><span class="row-arrow" aria-hidden="true">↗</span></div><div class="row-meta"><span>' + projectNo + '</span><span>' + esc(p.name) + '</span><span>' + (p.with ? 'With: ' + esc(p.with) : '') + '</span><span class="y">' + esc(p.year) + '</span></div></a>';
 }).join("");
 
 /* hover preview follows the cursor */
 const peek = $("#peek"); let tx = 0, ty = 0, cx = 0, cy = 0, raf = 0;
+const scrollPortrait = $("#scrollPortrait");
+const photoLayers = [$("#scrollPortraitA"), $("#scrollPortraitB")];
+const foldCanvas=$("#foldCanvas"), foldContext=foldCanvas.getContext("2d"), foldImage=new Image();
+const mistCanvas=$("#mistCanvas"), mistContext=mistCanvas.getContext("2d");
+let mistPoints=[], mistFrame=0;
+function addMist(x,y,angle,intensity=1){const t=performance.now(),count=2+Math.min(3,Math.round(intensity));for(let i=0;i<count;i++)mistPoints.push({x:x+(Math.random()-.5)*14,y:y+(Math.random()-.5)*14,angle:angle+(Math.random()-.5)*.7,r:24+Math.random()*32,life:650+Math.random()*450,born:t,alpha:.09+Math.random()*.1});if(!mistFrame)mistFrame=requestAnimationFrame(drawMist);}
+function drawMist(now){mistFrame=0;const w=scrollPortrait.clientWidth,h=scrollPortrait.clientHeight,ratio=Math.min(devicePixelRatio||1,2),cw=Math.round(w*ratio),ch=Math.round(h*ratio);if(mistCanvas.width!==cw||mistCanvas.height!==ch){mistCanvas.width=cw;mistCanvas.height=ch;}const ctx=mistContext;ctx.setTransform(ratio,0,0,ratio,0,0);ctx.clearRect(0,0,w,h);mistPoints=mistPoints.filter(p=>now-p.born<p.life);ctx.globalCompositeOperation="screen";for(const p of mistPoints){const age=(now-p.born)/p.life,fade=Math.sin(Math.PI*age),r=p.r*(.75+age*.55);ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.angle);ctx.scale(1.9,.66);const g=ctx.createRadialGradient(0,0,0,0,0,r);g.addColorStop(0,"rgba(255,255,248,"+(p.alpha*fade)+")");g.addColorStop(.38,"rgba(238,242,242,"+(p.alpha*.62*fade)+")");g.addColorStop(1,"rgba(255,255,255,0)");ctx.fillStyle=g;ctx.beginPath();ctx.arc(0,0,r,0,Math.PI*2);ctx.fill();ctx.restore();}ctx.globalCompositeOperation="source-over";if(mistPoints.length)mistFrame=requestAnimationFrame(drawMist);}
+const trailCanvas=$("#canvas"),trailContext=trailCanvas.getContext("2d"),trailPointer={x:innerWidth/2,y:innerHeight/2,active:false},trailLines=[];let lastPointerClientX=innerWidth/2,lastPointerClientY=innerHeight/2,lastTrailScroll=scrollY;
+for(let i=0;i<20;i++)trailLines.push({spring:.38+i*.0018,friction:.48+Math.random()*.025,nodes:Array.from({length:50},()=>({x:innerWidth/2,y:innerHeight/2,vx:0,vy:0}))});
+function resizeCanvasCursor(){const ratio=Math.min(devicePixelRatio||1,2);trailCanvas.width=Math.round(innerWidth*ratio);trailCanvas.height=Math.round(innerHeight*ratio);trailContext.setTransform(ratio,0,0,ratio,0,0);}
+function drawTrail(line,index){const nodes=line.nodes,ctx=trailContext;ctx.beginPath();ctx.moveTo(nodes[0].x,nodes[0].y);for(let i=1;i<nodes.length-1;i++){const a=nodes[i],b=nodes[i+1];ctx.quadraticCurveTo(a.x,a.y,(a.x+b.x)/2,(a.y+b.y)/2);}const pen=nodes[nodes.length-2],last=nodes[nodes.length-1];ctx.quadraticCurveTo(pen.x,pen.y,last.x,last.y);ctx.lineWidth=.7+index*.035;ctx.stroke();}
+function renderCanvasCursor(){const ctx=trailContext;ctx.clearRect(0,0,innerWidth,innerHeight);if(trailPointer.active){ctx.globalCompositeOperation="source-over";ctx.strokeStyle="rgba(76,78,77,.09)";ctx.shadowColor="rgba(68,70,69,.1)";ctx.shadowBlur=8;trailLines.forEach((line,index)=>{let spring=line.spring;const head=line.nodes[0];head.vx+=(trailPointer.x-head.x)*spring;head.vy+=(trailPointer.y-head.y)*spring;for(let i=0;i<line.nodes.length;i++){const node=line.nodes[i];if(i){const previous=line.nodes[i-1];node.vx+=(previous.x-node.x)*spring+previous.vx*.23;node.vy+=(previous.y-node.y)*spring+previous.vy*.23;}node.vx*=line.friction;node.vy*=line.friction;node.x+=node.vx;node.y+=node.vy;spring*=.98;}drawTrail(line,index);});ctx.shadowBlur=0;}requestAnimationFrame(renderCanvasCursor);}
+resizeCanvasCursor();renderCanvasCursor();addEventListener("resize",resizeCanvasCursor,{passive:true});
+addEventListener("scroll",()=>{const dy=scrollY-lastTrailScroll;lastTrailScroll=scrollY;if(trailPointer.active&&Math.abs(dy)>1){trailLines.forEach(line=>line.nodes.forEach((node,i)=>{node.y-=dy*(.5-i/line.nodes.length*.35)}));}},{passive:true});
+let foldActive=false, foldX=0, foldY=0, foldAngle=0, lastPointerX=0, lastPointerY=0;
+const fallbackPortrait = "data:image/svg+xml;charset=utf-8," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 900"><defs><radialGradient id="paper" cx="48%" cy="34%" r="70%"><stop stop-color="#f5f5f2"/><stop offset="1" stop-color="#b9b9b5"/></radialGradient><linearGradient id="form" x1="0" x2="1" y1=".2" y2=".8"><stop stop-color="#101010"/><stop offset=".42" stop-color="#595957"/><stop offset=".7" stop-color="#171717"/><stop offset="1" stop-color="#080808"/></linearGradient></defs><rect width="720" height="900" fill="url(#paper)"/><path fill="url(#form)" d="M70 900c25-154 104-225 204-263l48-18 9-62c-60-28-95-87-99-161-8-121 48-214 145-223 115-11 196 77 196 210 0 80-35 145-98 177l9 59 58 20c103 37 182 112 204 261z"/><path fill="#a8a8a5" opacity=".48" d="M257 354c0-117 45-195 122-195 79 0 133 77 133 190 0 91-39 156-103 174-73 20-152-43-152-169z"/><path fill="#171717" d="M477 313c30 12 40 34 31 54l-33 9c12-19 7-39 2-63z"/><path fill="#d4d4d0" opacity=".55" d="M332 300c22-11 49-10 68 2m-70 55c16 4 29 4 43-1" fill="none" stroke="#d4d4d0" stroke-width="8" stroke-linecap="round"/></svg>');
+let activePhotoLayer = 0, currentPhoto = "";
+const portraitSource = S.statementImg || S.about.portrait || (P.find(p => p.cover) || {}).cover || fallbackPortrait;
+function transitionPhoto(src) {
+  src = src || fallbackPortrait;
+  if (src === currentPhoto) return;
+  const next = 1 - activePhotoLayer, incoming = photoLayers[next], outgoing = photoLayers[activePhotoLayer];
+  incoming.classList.remove("active"); incoming.src = src;
+  foldImage.src=src;
+  requestAnimationFrame(() => { incoming.classList.add("active"); outgoing.classList.remove("active"); });
+  activePhotoLayer = next; currentPhoto = src;
+}
+function drawFold(){
+  if(!foldActive||!foldImage.complete||!foldImage.naturalWidth)return;
+  const w=scrollPortrait.clientWidth, h=scrollPortrait.clientHeight, ratio=Math.min(devicePixelRatio||1,2);
+  if(w<2||h<2)return;
+  const cw=Math.round(w*ratio),ch=Math.round(h*ratio);
+  if(foldCanvas.width!==cw||foldCanvas.height!==ch){foldCanvas.width=cw;foldCanvas.height=ch;}
+  const ctx=foldContext;ctx.setTransform(ratio,0,0,ratio,0,0);ctx.clearRect(0,0,w,h);
+  const scale=Math.max(w/foldImage.naturalWidth,h/foldImage.naturalHeight),dw=foldImage.naturalWidth*scale,dh=foldImage.naturalHeight*scale,ox=(w-dw)/2,oy=(h-dh)/2;
+  const nx=-Math.sin(foldAngle),ny=Math.cos(foldAngle),tx=Math.cos(foldAngle),ty=Math.sin(foldAngle),alongSize=Math.min(150,Math.max(80,w*.22)),acrossSize=31;
+  function point(x,y){const dx=x-foldX,dy=y-foldY,along=dx*tx+dy*ty,across=dx*nx+dy*ny,band=Math.exp(-Math.pow(along/alongSize,2)-Math.pow(across/acrossSize,2)),ripple=Math.sin(along*.055)*Math.exp(-Math.abs(along)/130)*Math.exp(-Math.abs(across)/50)*3,bend=across/acrossSize*Math.exp(-Math.pow(across/acrossSize,2)*.5)*band*17+ripple;return{x:x+nx*bend,y:y+ny*bend};}
+  function triangle(s0,s1,s2,d0,d1,d2){const den=s0.x*(s1.y-s2.y)+s1.x*(s2.y-s0.y)+s2.x*(s0.y-s1.y);if(Math.abs(den)<.001)return;const a=(d0.x*(s1.y-s2.y)+d1.x*(s2.y-s0.y)+d2.x*(s0.y-s1.y))/den,c=(d0.x*(s2.x-s1.x)+d1.x*(s0.x-s2.x)+d2.x*(s1.x-s0.x))/den,e=(d0.x*(s1.x*s2.y-s2.x*s1.y)+d1.x*(s2.x*s0.y-s0.x*s2.y)+d2.x*(s0.x*s1.y-s1.x*s0.y))/den,b=(d0.y*(s1.y-s2.y)+d1.y*(s2.y-s0.y)+d2.y*(s0.y-s1.y))/den,d=(d0.y*(s2.x-s1.x)+d1.y*(s0.x-s2.x)+d2.y*(s1.x-s0.x))/den,f=(d0.y*(s1.x*s2.y-s2.x*s1.y)+d1.y*(s2.x*s0.y-s0.x*s2.y)+d2.y*(s0.x*s1.y-s1.x*s0.y))/den;ctx.save();ctx.setTransform(ratio,0,0,ratio,0,0);ctx.beginPath();ctx.moveTo(d0.x,d0.y);ctx.lineTo(d1.x,d1.y);ctx.lineTo(d2.x,d2.y);ctx.closePath();ctx.clip();ctx.setTransform(ratio*a,ratio*b,ratio*c,ratio*d,ratio*e,ratio*f);ctx.drawImage(foldImage,0,0);ctx.restore();}
+  const cols=20,rows=24,grid=[];
+  for(let y=0;y<=rows;y++){grid[y]=[];for(let x=0;x<=cols;x++){const px=w*x/cols,py=h*y/rows,warped=point(px,py);grid[y][x]={src:{x:(px-ox)/scale,y:(py-oy)/scale},dst:warped};}}
+  for(let y=0;y<rows;y++)for(let x=0;x<cols;x++){const a=grid[y][x],b=grid[y][x+1],c=grid[y+1][x],d=grid[y+1][x+1];triangle(a.src,b.src,c.src,a.dst,b.dst,c.dst);triangle(b.src,d.src,c.src,b.dst,d.dst,c.dst);}
+  ctx.save();ctx.setTransform(ratio,0,0,ratio,0,0);ctx.beginPath();ctx.ellipse(foldX,foldY,alongSize*1.15,acrossSize*3,foldAngle,0,Math.PI*2);ctx.clip();ctx.translate(foldX,foldY);ctx.rotate(foldAngle+Math.PI/2);ctx.globalCompositeOperation="soft-light";const shade=ctx.createLinearGradient(-acrossSize*3,0,acrossSize*3,0);shade.addColorStop(0,"rgba(0,0,0,0)");shade.addColorStop(.31,"rgba(0,0,0,.32)");shade.addColorStop(.46,"rgba(0,0,0,.04)");shade.addColorStop(.5,"rgba(255,255,255,.7)");shade.addColorStop(.56,"rgba(0,0,0,.28)");shade.addColorStop(1,"rgba(0,0,0,0)");ctx.fillStyle=shade;ctx.fillRect(-acrossSize*3,-alongSize*1.4,acrossSize*6,alongSize*2.8);ctx.restore();
+}
+foldImage.onload=()=>drawFold();
+transitionPhoto(portraitSource);
+const scaleMotion={value:.34,velocity:0}, offsetMotion={value:20,velocity:0};
+const pointerXMotion={value:0,velocity:0}, pointerYMotion={value:0,velocity:0};
+const tiltXMotion={value:0,velocity:0},tiltYMotion={value:0,velocity:0},foldXMotion={value:0,velocity:0},foldYMotion={value:0,velocity:0};
+let scaleTarget=.34, offsetTarget=20, pointerXTarget=0, pointerYTarget=0,tiltXTarget=0,tiltYTarget=0,foldTargetX=0,foldTargetY=0,portraitFrame=0,homeActive=true;
 const tick = () => { cx += (tx - cx) * .18; cy += (ty - cy) * .18; peek.style.left = cx + "px"; peek.style.top = cy + "px"; raf = peek.classList.contains("on") ? requestAnimationFrame(tick) : 0; };
-$("#rows").addEventListener("pointerover", e => { const r = e.target.closest(".row"); if (!r) return; const p = P[+r.dataset.i]; peek.innerHTML = img(p.cover, p.name); peek.classList.add("on"); if (!raf) raf = requestAnimationFrame(tick); });
-$("#rows").addEventListener("pointerleave", () => peek.classList.remove("on"));
-addEventListener("pointermove", e => { tx = e.clientX + 40; ty = e.clientY; if (!peek.classList.contains("on")) { cx = tx; cy = ty; } }, {passive: true});
+$("#rows").addEventListener("pointerover", e => { const r = e.target.closest(".row"); if (!r) return; pointerOverProject = true; const p = P[+r.dataset.i]; peek.innerHTML = img(p.cover, p.name); peek.classList.remove("scroll-active"); peek.classList.add("on"); if (!raf) raf = requestAnimationFrame(tick); });
+$("#rows").addEventListener("pointerleave", () => { pointerOverProject = false; peek.classList.remove("on", "scroll-active"); updateScrollMotion(); });
+addEventListener("pointermove", e => {
+  tx = e.clientX + 40; ty = e.clientY; if (!peek.classList.contains("on")) { cx = tx; cy = ty; }
+  if(e.pointerType!=="touch"){if(!trailPointer.active)trailLines.forEach(line=>line.nodes.forEach(node=>{node.x=e.clientX;node.y=e.clientY;node.vx=node.vy=0;}));trailPointer.x=e.clientX;trailPointer.y=e.clientY;trailPointer.active=true;lastPointerClientX=e.clientX;lastPointerClientY=e.clientY;}
+  const rect=scrollPortrait.getBoundingClientRect(), over=e.pointerType!=="touch"&&scrollPortrait.style.opacity!=="0"&&e.clientX>=rect.left&&e.clientX<=rect.right&&e.clientY>=rect.top&&e.clientY<=rect.bottom;
+  foldActive=over;foldCanvas.classList.toggle("on",over);
+  if(over){const px=(e.clientX-rect.left)*(scrollPortrait.clientWidth/rect.width),py=(e.clientY-rect.top)*(scrollPortrait.clientHeight/rect.height),dx=e.clientX-lastPointerX,dy=e.clientY-lastPointerY;foldTargetX=px;foldTargetY=py;if(Math.hypot(dx,dy)>1){foldAngle=Math.atan2(dy,dx)+Math.PI/2;addMist(px,py,Math.atan2(dy,dx),Math.min(3,Math.hypot(dx,dy)/12));}const nx=(px-scrollPortrait.clientWidth/2)/Math.max(1,scrollPortrait.clientWidth/2),ny=(py-scrollPortrait.clientHeight/2)/Math.max(1,scrollPortrait.clientHeight/2);pointerXTarget=Math.max(-1,Math.min(1,nx))*10;pointerYTarget=Math.max(-1,Math.min(1,ny))*8;tiltYTarget=nx*1.35;tiltXTarget=-ny*1.35;queuePortrait();}
+  else{pointerXTarget=pointerYTarget=tiltXTarget=tiltYTarget=0;queuePortrait();}
+  lastPointerX=e.clientX;lastPointerY=e.clientY;
+}, {passive: true});
+addEventListener("pointerleave", () => { pointerXTarget=pointerYTarget=tiltXTarget=tiltYTarget=0;foldActive=false;foldCanvas.classList.remove("on");queuePortrait(); });
 
 /* about */
 const A = S.about;
@@ -164,21 +244,85 @@ $("#ab").innerHTML = (A.portrait ? `<div class="pt">${img(A.portrait, S.name)}</
 $("#ab2").innerHTML = `<span class="lab">Recognition:</span><p style="font-size:1rem;margin:.3rem 0">${esc(A.recognition)}</p><ul>${A.awards.map(a => `<li>${esc(a)}</li>`).join("")}</ul>
   <span class="lab">Services:</span><ul>${A.services.map(a => `<li>${esc(a)}</li>`).join("")}</ul>`;
 
+/* Scroll-linked motion: title drifts away while work rows lift into view. */
+const motionReduced = matchMedia("(prefers-reduced-motion: reduce)");
+let motionFrame = 0, pointerOverProject = false;
+function springTo(motion, target, dt, stiffness=6) {
+  const delta = motion.value - target, acceleration = motion.velocity + stiffness * delta, decay = Math.exp(-stiffness * dt);
+  motion.value = target + (delta + acceleration * dt) * decay;
+  motion.velocity = (motion.velocity - stiffness * acceleration * dt) * decay;
+  if (Math.abs(motion.value - target) < .01 && Math.abs(motion.velocity) < .02) { motion.value = target; motion.velocity = 0; }
+}
+function animatePortrait(now) {
+  portraitFrame = 0;
+  if (motionReduced.matches || !homeActive) return;
+  const dt = Math.min(.05, Math.max(.001, (now - (animatePortrait.last || now)) / 1000)); animatePortrait.last = now;
+  springTo(scaleMotion,scaleTarget,dt,6); springTo(offsetMotion,offsetTarget,dt,6);
+  springTo(pointerXMotion,pointerXTarget,dt,7); springTo(pointerYMotion,pointerYTarget,dt,7);springTo(tiltXMotion,tiltXTarget,dt,7);springTo(tiltYMotion,tiltYTarget,dt,7);springTo(foldXMotion,foldTargetX,dt,13);springTo(foldYMotion,foldTargetY,dt,13);foldX=foldXMotion.value;foldY=foldYMotion.value;
+  scrollPortrait.style.transform="translate3d("+pointerXMotion.value+"px,calc("+offsetMotion.value+"vh + "+pointerYMotion.value+"px),0) perspective(1100px) rotateX("+tiltXMotion.value+"deg) rotateY("+tiltYMotion.value+"deg) scale("+scaleMotion.value+")";
+  if(foldActive)drawFold();
+  if (Math.abs(scaleMotion.value-scaleTarget)>.002 || Math.abs(offsetMotion.value-offsetTarget)>.01 || Math.abs(pointerXMotion.value-pointerXTarget)>.1 || Math.abs(pointerYMotion.value-pointerYTarget)>.1 || Math.abs(tiltXMotion.value-tiltXTarget)>.02 || Math.abs(tiltYMotion.value-tiltYTarget)>.02 || (foldActive&&(Math.abs(foldXMotion.value-foldTargetX)>.25||Math.abs(foldYMotion.value-foldTargetY)>.25))) {
+    portraitFrame = requestAnimationFrame(animatePortrait);
+  }
+}
+function queuePortrait(){if(!portraitFrame)portraitFrame=requestAnimationFrame(animatePortrait);}
+function ease(x){return x*x*(3-2*x);}
+function updateScrollMotion() {
+  motionFrame = 0;
+  if (motionReduced.matches) { scrollPortrait.style.opacity = "0";foldActive=false;foldCanvas.classList.remove("on");pointerXTarget=pointerYTarget=tiltXTarget=tiltYTarget=0;return; }
+  const progress = Math.max(0, Math.min(1, scrollY / Math.max(innerHeight * 1.1, 1)));
+  document.documentElement.style.setProperty("--scroll-progress", progress.toFixed(3));
+  $("#name").style.transform = "translate3d(0," + (-progress * 9) + "vh,0) scale(" + (1 - progress * .045) + ")";
+  $("#name").style.transformOrigin = "left top";
+  $("#top").style.opacity = String(1 - progress * .35);
+  $("#stmt").style.transform = "translate3d(0," + (-progress * 2.5) + "rem,0)";
+  $("#stmt").style.opacity = String(1 - progress * .18);
+  const rows = [...document.querySelectorAll("#rows .row")];
+  rows.forEach(row => {
+    const rect = row.getBoundingClientRect();
+    const enter = Math.max(0, Math.min(1, (innerHeight * .96 - rect.top) / (innerHeight * .5)));
+    row.style.opacity = String(.16 + enter * .84);
+    row.style.transform = "translate3d(0," + ((1 - enter) * 42) + "px,0)";
+  });
+  if (!pointerOverProject) peek.classList.remove("on");
+  const stage = $("#portraitStage"), rect = stage.getBoundingClientRect();
+  const stageTop = rect.top + scrollY, travel = Math.max(1, stage.offsetHeight - innerHeight * .55);
+  const track = Math.max(0, Math.min(1, (scrollY - stageTop + innerHeight * .2) / travel));
+  const grow = ease(Math.min(1, track / .32)), settle = ease(Math.max(0, Math.min(1, (track - .68) / .32)));
+  scaleTarget = .52 + grow * .34 - settle * .1;
+  offsetTarget = 0;
+  const active = homeActive && rect.bottom > 0 && rect.top < innerHeight;
+  const fadeIn = Math.max(0,Math.min(1,(innerHeight*.92-rect.top)/(innerHeight*.34)));
+  const fadeOut = Math.max(0,Math.min(1,rect.bottom/(innerHeight*.28)));
+  scrollPortrait.style.opacity = active ? String(.88*Math.min(fadeIn,fadeOut)) : "0";
+  if (!active) { scaleTarget=.52; pointerXTarget=pointerYTarget=tiltXTarget=tiltYTarget=0;foldActive=false;foldCanvas.classList.remove("on"); }
+  if (active || portraitFrame) queuePortrait();
+  const availablePhotos = [portraitSource,...P.map(p=>p.cover).filter(Boolean)];
+  const imageIndex = Math.min(availablePhotos.length-1,Math.floor(track*availablePhotos.length));
+  if (active) transitionPhoto(availablePhotos[imageIndex]);
+}
+addEventListener("scroll", () => { if (!motionFrame) motionFrame = requestAnimationFrame(updateScrollMotion); }, {passive:true});
+addEventListener("resize", () => { if (!motionFrame) motionFrame = requestAnimationFrame(updateScrollMotion); }, {passive:true});
+updateScrollMotion();
+
 /* routing: #home  #work  #about  #p/<id> */
 function route() {
   const h = (location.hash || "#home").slice(1), [a, id] = h.split("/");
   const view = a === "p" ? "project" : a === "about" ? "about" : "home";
-  document.querySelectorAll(".view").forEach(v => v.classList.toggle("on", v.id === "v-" + view));
+  homeActive = view === "home";
+  if (!homeActive) { scrollPortrait.style.opacity = "0";foldActive=false;foldCanvas.classList.remove("on");pointerXTarget=pointerYTarget=tiltXTarget=tiltYTarget=0; }
+  document.querySelectorAll(".view").forEach(v => { const active = v.id === "v-" + view; v.classList.toggle("on", active); if (active) { v.style.animation = "none"; requestAnimationFrame(() => v.style.animation = ""); } });
   document.querySelectorAll(".nav a").forEach(l => l.classList.toggle("cur", l.dataset.h === (a === "p" ? "work" : a || "home")));
   if (view === "project") {
     const i = Math.max(0, P.findIndex(p => p.id === id)), p = P[i], n = P[(i + 1) % P.length];
     $("#proj").innerHTML = `<span class="lab">P.${pad(i + 1)} / ${esc(p.year)}</span><h2 style="margin-top:.6rem">${esc(p.name)}</h2>
       <div class="cols"><div class="a"><p>${esc(p.text)}</p></div><div class="b">${p.with ? `<span class="lab">With:</span><p style="font-size:1rem">${esc(p.with)}</p>` : ""}</div></div>
-      <div class="imgs">${p.images.map((s, k) => `<div class="ph">${s ? img(s, p.name + " " + (k + 1)) : pad(k + 1)}</div>`).join("")}</div>
+      <div class="imgs">${p.images.map((s, k) => `<div class="ph" style="--photo-index:${k}">${s ? img(s, p.name + " " + (k + 1)) : pad(k + 1)}</div>`).join("")}</div>
       <a class="next" href="#p/${esc(n.id)}"><span>Next</span><span>${esc(n.name)} →</span></a>`;
   }
-  if (a === "work") requestAnimationFrame(() => $("#work").scrollIntoView({behavior: "smooth", block: "start"}));
-  else scrollTo(0, 0);
+  registerDentItems();
+  if (a === "work") requestAnimationFrame(() => { $("#work").scrollIntoView({behavior: "smooth", block: "start"}); updateScrollMotion(); });
+  else { scrollTo(0, 0); requestAnimationFrame(updateScrollMotion); }
 }
 addEventListener("hashchange", route); route();
 </script>
