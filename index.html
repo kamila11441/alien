@@ -81,7 +81,7 @@ h1{margin:clamp(2rem,9vw,7rem) 0 0;padding:0 var(--pad);font-weight:500;letter-s
 .cols li{padding:.4rem 0;border-top:1px solid var(--line)}
 .pt{aspect-ratio:4/5;background:var(--tile);overflow:hidden;max-width:24rem;margin-bottom:1.4rem}
 .imgs{display:grid;gap:var(--pad);margin-top:2rem}
-.imgs .ph{background:var(--tile);aspect-ratio:16/10;overflow:hidden;display:grid;place-items:center;font:.8rem var(--mono);color:var(--muted)}
+.imgs .ph{background:var(--tile);aspect-ratio:auto;overflow:visible;display:block;place-items:center;font:.8rem var(--mono);color:var(--muted)}
 .imgs .ph{clip-path:inset(0 0 0 100%);animation:photo-reveal .9s cubic-bezier(.2,.7,.2,1) calc(var(--photo-index,0)*.1s) both}
 @keyframes photo-reveal{to{clip-path:inset(0)}}
 .next{display:flex;justify-content:space-between;margin-top:3rem;padding-top:1rem;border-top:1px solid var(--line);font-size:1.5rem;letter-spacing:-.03em}
@@ -227,6 +227,8 @@ function route() {
   else { scrollTo(0, 0); requestAnimationFrame(updateScrollMotion); }
 }
 addEventListener("hashchange", route); route();
+
+ 
 </script>
 </body>
 </html>
